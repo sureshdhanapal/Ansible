@@ -13,8 +13,8 @@ Step 1: YML file on ACM Server
 
 Create a file group_vars/windows.yml and define the below inventory variables:
 
-\\\\\\it is suggested that these be encrypted with ansible-vault:
-\\\\\ansible-vault edit group_vars/windows.yml
+#### It is suggested that these be encrypted with ansible-vault:
+#### ansible-vault edit group_vars/windows.yml
 
 ansible_user: Administrator
 ansible_password: SecretPasswordGoesHere
