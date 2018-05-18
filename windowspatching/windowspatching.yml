@@ -1,0 +1,39 @@
+---
+- hosts:
+  tasks:
+
+   - name: Download the putty package
+     win_get_url:
+      url: https://the.earth.li/~sgtatham/putty/0.70/w64/putty-64bit-0.70-installer.msi
+      dest: C:\Users\Administrator\Downloads\putty-64bit-0.70-installer.msi
+      force: no
+   - name: Install putty
+     win_msi:
+      path: C:\Users\Administrator\Downloads\putty-64bit-0.70-installer.msi
+      wait: true
+    - name: bat script to find the IP
+      win_shell: C:\ip.bat 
+      register: data
+    - debug: msg={{ data.stdout_lines }}
+    - name: Create file with IP
+      win_file:
+       path: C:\"{{snap}}"
+       state: file
+   - name: Shortcut for putty in C drive
+     win_shortcut:
+      src: C:\Program Files\PuTTY\pscp.exe
+      dest: C:\pscp.lnk
+      icon: C:\Program Files\PuTTY\pscp.exe,0
+   - name: Copy ppk file to remote machine
+     win_copy:
+      src: /etc/ansible/windows/AWS_TCS.ppk
+      dest: C:\AWS_TCS.ppk
+   - name: Check for latest Patches
+     win_shell: powershell C:\patch.ps1 > C:\"{{snap}}"
+   - name: Copy patch update details to local - filepath = /home/windows/updates.txt
+     win_shell: C:\pscp.lnk -i "C:\AWS_TCS.ppk" C:\"{{snap}}" windows@172.31.48.37:/home/windows/"{{snap}}"
+...
+
+
+
+
