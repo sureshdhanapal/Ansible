@@ -3,7 +3,7 @@ How to connect Ansible Control Machine (Linux) with Client (Windows)
 Prerequisites:
 
 Ansible (>= 2.3.0) installed linux machine with
-Package: Python2-winrm (pip install pywinrm)a or later
+Package: Python2-winrm (pip install pywinrm) or later
 
 Windows Machine with Powershell (>= 3.0)
 Script to be downloaded: https://github.com/ansible/ansible/blob/devel/examples/scripts/ConfigureRemotingForAnsible.ps1
@@ -11,7 +11,7 @@ Script to be downloaded: https://github.com/ansible/ansible/blob/devel/examples/
 
 Step 1: YML file on ACM Server
 
-Create a file group_vars/windows.yml and define the below inventory variables:
+Create a file /etc/ansible/group_vars/windows.yml and define the below inventory variables:
 
 #### It is suggested that these be encrypted with ansible-vault:
 #### ansible-vault edit group_vars/windows.yml
