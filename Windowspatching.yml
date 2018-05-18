@@ -1,0 +1,26 @@
+- name: windows update module
+  hosts: windows
+  tasks:
+    - name: install (all) updates
+      win_updates:
+        category_names:
+          -SecurityUpdates
+
+        state: searched
+        log_path: c:\ansible.txt
+      register: check_finish
+
+
+    - win_copy:
+          src: /etc/ansible/windowsupdate_hotfix.ps1
+          dest: c:\windowsupdate_hotfix.ps1
+    - win_shell: c:\windowsupdate_hotfix.ps1
+
+    - fetch:
+        src: c:\hotfix.txt
+        dest: /etc/ansible/patch_install/windows_hotfix-{{ inventory_hostname }}
+        flat: yes
+
+    - name: check on reboot requirement
+      raw: shutdown.exe /r /t 10 /d p:2:3
+      when: check_finish.reboot_required != false
