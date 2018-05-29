@@ -1,0 +1,26 @@
+- hosts: linux
+  tasks:   
+  - name: Install the patches and update
+    apt:
+      update_cache: yes
+      cache_valid_time: 5000
+      upgrade: yes
+    tags: ['apt']
+    become: yes
+  - name: restart system to update install patches
+    shell: "sleep 5 && sudo reboot now"
+    async: 1
+    poll: 0
+
+  - name: wait for 10 seconds
+    pause:
+      seconds: 10
+
+  - name: wait for the system to reboot
+    wait_for_connection:
+      connect_timeout: 20
+      sleep: 5
+      delay: 5
+      timeout: 60
+  - name: date and uptime
+    shell: uptime && date
