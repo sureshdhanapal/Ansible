@@ -1,0 +1,120 @@
+---
+
+# tasks file for windows
+  - hosts: windows  
+    vars: 
+      region: "{{ aws_region }}"
+
+#- name: infrastructure setup
+#  hosts: win
+#  gather_facts: no
+  # vars:
+  #   vpc_id: vpc-1566777c
+  #   region: us-east-2
+#  vars_files:
+#    - secret.yml
+
+  - name: Copy hardening script
+    win_copy:
+      src: files/TM-DSM-EU.ps1
+      dest: c:\Users\Administrator\TM-DSM-EU.ps1
+    when: region == "eu-west-1"
+#
+  - win_shell: c:\Users\Administrator\TM-DSM-EU.ps1 >> c:\Users\Administrator\TM-DSMlog.txt
+    ignore_errors: yes
+
+  - name: Copy hardening script
+    win_copy:
+      src: files/TM-DSM-India.ps1
+      dest: c:\Users\Administrator\TM-DSM-India.ps1
+    when: region == "ap-south-1"
+
+  - win_shell: c:\Users\Administrator\TM-DSM-India.ps1 >> c:\Users\Administrator\TM-DSMlog.txt
+    ignore_errors: yes
+
+  - name: Copy US script for TM DSM 
+    win_copy:
+      src: files/TM-DSM-US.ps1
+      dest: c:\Users\Administrator\TM-DSM-US.ps1
+    when: region == "us-east-1"
+
+  - win_shell: c:\Users\Administrator\TM-DSM-US.ps1 >> c:\Users\Administrator\TM-DSMlog.txt
+    ignore_errors: yes
+
+#  Reboot the machine to take TM-DSM effects
+  - win_reboot: 
+
+#
+#  - name: set a single address on the adapter named Ethernet
+#    win_dns_client:
+#      adapter_names: "*"
+#      ipv4_addresses: "{{ AD_dns_address }}"
+
+#  - name: Join domain 
+#    win_domain_membership:
+#      dns_domain_name: "{{ AD_domain_name }}"
+#      hostname: "{{ hostname }}"
+#      domain_admin_user: "{{ domain_admin }}"
+#      domain_admin_password: "{{ domain_admin_password }}"
+#      domain_ou_path: "OU=Server_Hardening,OU=Gurgaon,DC=devcorp,DC=ad"
+#      state: domain
+#    register: domain_state
+
+#  - win_reboot:
+#    when: domain_state.reboot_required
+
+#  - name: Copy hardening script
+#    win_copy:
+#      src: files/ad-join-singapore.ps1
+#      dest: c:\Users\Administrator\ad-join-singapore.ps1
+
+
+#  - win_shell: c:\Users\Administrator\ad-join-singapore.ps1
+
+
+#  - name: Disable Domain firewall
+#    win_firewall:
+#      state: disabled
+#      profiles:
+#      - Private
+#      - Public
+#    tags: disable_firewall
+
+  - name: Stop IP Helper service
+    win_service:
+      name: iphlpsvc
+      state: stopped
+      start_mode: disabled
+
+  - name: Set off firewall service
+    win_service:
+      name: MpsSvc
+      state: started
+
+  - name: Start computer browser service
+    win_service:
+      name: Browser
+      state: started
+      start_mode: auto
+
+#  - name: Ensure user Guest is disabled
+#    win_user:
+#      name: Guest
+#      account_disabled: yes
+#      state: absent
+
+#  - name: Ensure dummy administrator is created
+#    win_user:
+#      name: Dummy
+#      password: B0bP4ssw0rd
+#      state: present
+#      description: Built-in account for administering the computer/domain
+#      groups:
+#        - Users
+
+#  - name: Install Remote Desktop Connection Manager from msi
+#    win_package:
+#      path: http://go.microsoft.com/fwlink/?LinkId=717507
+#      state: present
+#      arguments: /quiet
+

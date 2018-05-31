@@ -1,0 +1,126 @@
+---
+# vars file for bootstrap
+
+hostname: "GENPACTTESTLAB"
+ssh_key_path: "{{ lookup('file', '/var/lib/jenkins/sunteam.pub') }}"
+requester_user: "453635478"
+email_id: "devopsss@genpact.com"
+#requester_pwd: "$1$/d340bZ5$olISAyKA3WRRSPHhZmzhk0"
+#pwd: test
+
+packages:
+  - curl
+  - sysv-rc-conf
+  - libpam-pwquality
+  - wget
+  - ntp
+  - snmpd
+  - auditd
+
+delete_strings:
+  - file: /etc/ssh/sshd_config
+    regexp: '^ClientAliveInterval'
+  - file: /etc/ssh/sshd_config
+    regexp: '^#ClientAliveCountMax'
+  - file: /etc/ssh/sshd_config
+    regexp: '^#PermitRootLogin'
+  - file: /etc/ssh/sshd_config
+    regexp: '^ChallengeResponseAuthentication'
+  - file: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+  - file: /etc/login.defs
+    regexp: '^PASS_MAX_DAYS'
+  - file: /etc/login.defs
+    regexp: '^PASS_MIN_DAYS'
+  - file: /etc/pam.d/common-password
+    regexp: '^pam_pwquality.so'
+  - file: /etc/pam.d/common-password
+    regexp: '^use_authtok'
+  - file: /etc/ntp.conf
+    regexp: '^server'
+  - file: /etc/securetty
+    regexp: '^tty'
+
+add_strings:
+  - path: /etc/bash.bashrc
+    line: TMOUT=900
+  - path: /etc/profile
+    line: TMOUT=900
+  - path: /etc/ssh/sshd_config
+    line: 'ClientAliveInterval 900'
+  - path: /etc/ssh/sshd_config
+    line: 'ClientAliveCountMax 3'
+  - path: /etc/ssh/sshd_config
+    line: 'PermitRootLogin no'
+  - path: /etc/ssh/sshd_config
+    line: 'ChallengeResponseAuthentication yes'
+  - path: /etc/ssh/sshd_config
+    line: 'PasswordAuthentication yes'
+  - path: /etc/pam.d/common-auth
+    line: "auth         required      pam_tally2.so deny=3"
+  - path: /etc/ntp.conf
+    line: 'server  58.2.47.148'
+  - path: /etc/login.defs
+    line: "PASS_MAX_DAYS  90"
+  - path: /etc/login.defs
+    line: "PASS_MIN_DAYS  0"
+  - path: /etc/login.defs
+    line: "LOGIN_RETRIES     3"
+  - path: /etc/login.defs
+    line: "LOGIN_TIMEOUT     60"
+  - path: /etc/securetty
+    line: "tty1"
+  - path: /etc/sudoers
+    line: 'sunteam	  ALL=(ALL)	NOPASSWD: ALL'
+    
+del_users:
+  - lp
+  - news
+  - uucp
+  - games    
+
+del_groups:
+  - lp
+  - news
+  - uucp
+  - games  
+
+block_msg:
+  - msg_path: /etc/motd
+    block: |
+        |-----------------------------------------------------------------|
+        |                       GENPACT                                   |
+        | This system is for the use of authorized users only.            |
+        | Individuals using this computer system without authority, or in |
+        | excess of their authority, are subject to having all of their   |
+        | activities on this system monitored and recorded by system      |
+        | personnel.                                                      |
+        |                                                                 |
+        | In the course of monitoring individuals improperly using this   |
+        | system, or in the course of system maintenance, the activities  |
+        | of authorized users may also be monitored.                      |
+        |                                                                 |
+        | Anyone using this system expressly consents to such monitoring  |
+        | and is advised that if such monitoring reveals possible         |
+        | evidence of criminal activity, system personnel may provide the |
+        | evidence of such monitoring to law enforcement officials.       |
+        |-----------------------------------------------------------------|
+  - msg_path: /etc/issue
+    block: |
+        |-----------------------------------------------------------------|
+        |                       GENPACT                                   |
+        | This system is for the use of authorized users only.            |
+        | Individuals using this computer system without authority, or in |
+        | excess of their authority, are subject to having all of their   |
+        | activities on this system monitored and recorded by system      |
+        | personnel.                                                      |
+        |                                                                 |
+        | In the course of monitoring individuals improperly using this   |
+        | system, or in the course of system maintenance, the activities  |
+        | of authorized users may also be monitored.                      |
+        |                                                                 |
+        | Anyone using this system expressly consents to such monitoring  |
+        | and is advised that if such monitoring reveals possible         |
+        | evidence of criminal activity, system personnel may provide the |
+        | evidence of such monitoring to law enforcement officials.       |
+        |-----------------------------------------------------------------|

@@ -1,0 +1,16 @@
+---
+# tasks file for bootstrap
+
+#- name: Include specific for RHEL6.X 
+#  include: RHEL6.yml
+#  when: ansible_os_family == "RedHat" and ansible_lsb.major_release|int < 7 
+  
+- name: Include variables for each OS
+  include_vars: "{{ ansible_distribution }}.yml"
+
+- name: Include playbook for each OS
+  include: "{{ ansible_distribution }}.yml"
+  
+#- name: Include Windows playbook  
+#  include: Windows.yml
+#  when: ansible_os_family == "Windows"

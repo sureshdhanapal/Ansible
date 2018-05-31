@@ -1,0 +1,324 @@
+---
+
+- name: Add hostname
+  hostname:
+    name: "{{ hostname }}"
+
+- name: Add to hosts file
+  lineinfile:
+    path: /etc/hosts
+    line: '127.0.0.1 {{ hostname }}'
+    
+#- shell: yum install epel-release -y && yum install --enablerepo="epel" ufw -y
+
+- name: install dependency packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - "{{ packages }}"  
+
+- name: Download package file 
+  get_url:
+    url: https://dsm.genpact.com:443/software/deploymentscript/platform/linux/
+    dest: /tmp/DownloadInstallAgentPackage
+  register: file_status
+
+- fail: msg="Failed to download the agent installation script"
+  when: file_status|failed
+
+- name: Download file with check (sha256)
+  get_url:
+    url: https://dsm.genpact.com:443/software/deploymentscript/platform/linux/
+    dest: /tmp/DownloadInstallAgentPackage
+    checksum: sha256:31A52951335226FCD8BF73F58EBED5860E8298A3B396DC0D747052791ECEDBE1
+    validate_certs: no
+  when: file_status|succeeded
+  register: result
+
+- fail: msg="Failed to validate the agent installation script"
+  when: result|failed
+
+- name: change file permissions
+  file:
+    path: /tmp/DownloadInstallAgentPackage
+    owner: centos
+    group: centos
+
+- name: Download Install Agent Package
+  shell: . DownloadInstallAgentPackage && Download_Install_Agent
+  args:
+    chdir: /tmp
+    executable: /bin/bash
+  when: result|succeeded
+  register: download_result
+  failed_when: "'error' in download_result.stderr"
+
+- name: Reset agent
+  shell: /opt/ds_agent/dsa_control -r
+
+- name: Fetch aws region
+  shell: curl http://169.254.169.254/latest/meta-data/placement/availability-zone/
+  register: region
+
+- set_fact: var="policyid:23"
+  when: '"us" in region.stdout'
+
+- set_fact: var="policyid:41"
+  when: '"eu" in region.stdout'
+
+- set_fact: var="policyid:32"
+  when: '"ap" in region.stdout'
+
+- name: Activate agent
+  shell: /opt/ds_agent/dsa_control -a dsm://hb.genpact.com:443 "{{ var }}"
+
+- name: Delete strings from file
+  lineinfile:
+    path: "{{ item.file }}"
+    state: absent
+    regexp: "{{ item.regexp }}"
+  with_items:
+    - "{{ delete_strings }}"
+
+- group:
+    name: sunteam
+    state: present
+
+- name: Create sunteam user
+  user:
+    name: sunteam
+    comment: "sunteam user"
+    createhome: yes
+    state: present
+    password: ""
+    group: sunteam
+    groups: root
+    append: yes
+
+- name: Create requester user
+  user:
+    name: "{{ requester_user }}"
+    comment: "requester user"
+    createhome: yes
+    generate_ssh_key: yes
+    state: present    
+    password: "{{ requester_pwd | default() }}"
+
+- name: Downloading pub key
+  fetch: src=/home/{{ requester_user }}/.ssh/id_rsa.pub dest=/tmp/id_rsa.tmp flat=yes
+
+- name: Send email to requester user
+  mail:
+    host: localhost
+    port: 25
+    subject: Ansible-report
+    body: Hi {{ requester_user }}, PFA private key
+    from: Ansible@ansible-server
+    to: "{{ email_id }}"
+    attach: /tmp/id_rsa.tmp
+  delegate_to: localhost
+            
+- name: Set authorized key took from file
+  authorized_key:
+    user: sunteam
+    state: present
+    key: "{{ ssh_key_path }}"
+        
+- name: Add strings to file
+  lineinfile:
+    path: "{{ item.path }}"
+    line: "{{ item.line }}"
+  with_items:
+    - "{{ add_strings }}"
+
+- name: Set file permissions for /etc/passwd and /etc/shadow
+  file:
+    path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+    state: touch
+  with_items:
+    - { path: '/etc/passwd', mode: '0644'}
+    - { path: '/etc/shadow', mode: '0400'}
+
+- name: insert msg
+  blockinfile:
+    path: "{{ item.msg_path }}"
+    state: present
+#    marker: no
+    content: | 
+      {{ item.block }}
+  with_items:
+    - "{{ block_msg }}"
+
+- name: Add string
+  shell: "{{ item }}"
+  with_items:
+    - "sed -i '14 a password    requisite     pam_cracklib.so try_first_pass retry=3 type= minlen=8 dcredit=-2 ucredit=-1 lcredit=-1 ocredit=0' /etc/pam.d/system-auth"
+    - "sed -i '14 a password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok remember=24' /etc/pam.d/system-auth"
+
+- name: Reload sshd.service
+  service: state=reloaded name=sshd
+
+- name: Stop and disable firewalld service
+  systemd: state=stopped name=firewalld enabled=no
+  ignore_errors: yes
+
+- name: sshd 
+  shell: chkconfig sshd on
+
+# - name: Enable ufw.service
+#   service: name=ufw enabled=yes
+
+- name: Create backup directory
+  file:
+    path: /home/backup/
+    state: directory
+    mode: 0755
+
+- name: Take backup
+  shell: "{{ item }}"
+  with_items:
+    - "cp -rp /etc/passwd /home/backup/passwd.old"
+    - "cp -rp /etc/shadow /home/backup/shadow.old"
+  register: backup_status
+
+- fail: msg="Backup failed"
+  when: backup_status|failed
+
+- name: Remove users
+  user:
+    name: "{{ item }}"
+    state: absent
+    remove: yes
+  ignore_errors: yes
+  with_items:
+    - "{{ del_users }}"
+
+- name: Remove groups
+  group:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ del_groups }}"
+
+- shell: "awk -F: '($3 == 0) { print $1 }' /etc/passwd"
+
+# - name: Start ntpd service
+#   service:
+#     name: ntpd
+#     state: started
+
+# - shell: "{{ item }}" 
+#   with_items:
+#     - chkconfig ntpd on 
+#     - ntpq -pn > /var/tmp/ntp.log
+
+- iptables:
+    flush: true
+
+- name: Flush ip6tables 
+  shell: "ip6tables -F"
+  
+# - name: Stopping ufw.service
+#   service: state=stopped name=ufw enabled=no
+
+# - name: file
+#   shell: sudo su -c chkconfig --list | egrep -i 'telnet|rsync|finger|rsh|login' > /var/tmp/chk_log
+
+- name: Set file permissions for configuration file
+  file:
+    path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  with_items:
+    - { path: '/etc/snmp/snmpd.conf', mode: '700' }
+    - { path: '/usr/share/man', mode: '644'}
+    - { path: '/usr/share/info', mode: '644'}
+
+- name: Save list of files
+  shell: "{{ item }}"
+  with_items:
+    - find / -name "*sh" -print -exec ls -lL {} \; | grep -i rws > /var/tmp/sh_log
+    - find / -perm 4000 |more > /var/tmp/4000_log
+    - find / -perm 2000 |more > /var/tmp/2000_log
+
+- name: Set cron file permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode }}"
+    recurse: yes
+  with_items:
+    - { path: '/etc/cron.daily/', mode: '700' }
+    - { path: '/etc/cron.monthly/', mode: '700' }
+
+- name: Check if audit directory exists and create
+  file:
+    path: /etc/audit
+    state: directory
+
+- name: Check audit file exists and create
+  file:
+    path: "{{ item }}"
+    state: touch
+  with_items:
+    - /etc/audit/audit.rules
+    - /etc/cron.allow
+
+- name: Add lines to file
+  lineinfile:
+    path: "{{ item.path }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { path: '/etc/audit/audit.rules', line: '-a exit,always -S unlink -S rmdir'}
+    - { path: '/etc/hosts.allow', line: 'sshd : ALL'}
+    - { path: '/etc/hosts.deny', line: 'ALL: ALL'}
+    - { path: '/etc/rsyslog.conf', line: '*.*     @182.95.255.105'}
+
+- name: ensure file exists
+  copy:
+    content: ""
+    dest:  /etc/modprobe.d/no-usb-storage.conf
+    force: no
+    group: root
+    owner: root
+    mode: 0644
+
+- name: Disable USB
+  lineinfile:
+    path: "/etc/modprobe.d/no-usb-storage.conf"
+    line: "install usb-storage /bin/true"
+  ignore_errors: true
+
+- shell: modprobe -r usb-storage
+  ignore_errors: true
+
+- name: Update service manual access
+  replace:
+    path: /usr/lib/systemd/system/auditd.service
+    regexp: 'RefuseManualStop=yes'
+    replace: 'RefuseManualStop=no'
+    backup: yes
+
+- shell: sudo systemctl daemon-reload
+
+- name: Restart auditd service
+  systemd:
+    name: auditd
+    state: restarted
+  become: yes
+
+- shell: auditctl -l > /var/tmp/audit_logs
+
+- name: Restarting rsyslog.service
+  service: state=restarted name=rsyslog 
+
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest

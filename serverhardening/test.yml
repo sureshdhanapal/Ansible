@@ -1,0 +1,14 @@
+- hosts: linux
+  become: yes
+  tasks:
+   - name: Send email to requester user
+     mail:
+      host: localhost
+      port: 25
+#      username: serush46@gmail.com
+#      password: 156453pavi
+      subject: Ansible-report
+      body: Hi suresh, PFA private key
+      to: serush46@outlook.com
+      attach: /Users/suresh.kumar/.ssh/id_rsa
+     delegate_to: localhost
