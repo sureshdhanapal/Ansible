@@ -168,8 +168,8 @@
 - name: sshd 
   shell: sysv-rc-conf sshd on
 
-- name: Enable ufw.service
-  service: name=ufw enabled=yes
+#- name: Enable ufw.service
+#  service: name=ufw enabled=yes
 
 - name: Create backup directory
   file:
