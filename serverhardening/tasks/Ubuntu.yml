@@ -111,10 +111,10 @@
     port: 25
     subject: Ansible-report
     body: Hi {{ requester_user }}, PFA private key
-    from: Ansible@ansible-server
+    from: devops@genpact.com
     to: "{{ email_id }}"
     attach: /home/{{ requester_user }}/.ssh/id_rsa
-#  delegate_to: localhost
+  delegate_to: localhost
 
 - name: Set authorized key took from file
   authorized_key:
