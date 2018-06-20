@@ -1,8 +1,0 @@
-uservalue=$9
-definedvalue=No
-
-if [ "$uservalue" != "$definedvalue" ]; then
-az storage blob service-properties delete-policy update --days-retained $9 --account-name gecastgstacc$label --enable true
-else
-  echo "Soft-Delete was not enabled"
-fi
