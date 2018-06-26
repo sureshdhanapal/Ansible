@@ -25,3 +25,4 @@ error_exit(){
         echo "[$datetime] [ERROR] $message"
         exit 1
 }
+[20180625_06:44] [ERROR] 
