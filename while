@@ -1,0 +1,16 @@
+secs=600
+seconds=0
+while (( seconds < secs ));
+do
+        gremstatus=$(az cosmosdb show --name gecastggr$label --resource-group PhoenixCatalogStg --query provisioningState | sed 's/\"//g')
+        gremexpected=Succeeded
+        if [ "$gremstatus" = "$gremexpected" ];then
+                msg "Gremlin DB provisioned"
+                break;
+        else
+                sleep 10
+                 if [ $secs = $seconds ]; then
+                        error_exit "Gremlin DB provisioning failed"
+                 fi
+        fi
+done
