@@ -14,3 +14,14 @@ do
                  fi
         fi
 done
+
+datetime=$(date +"%Y%m%d_%H:%M")
+msg() {
+ local message="$1"
+ echo "[$datetime] [INFO] $message"
+}
+error_exit(){
+        local message="$1"
+        echo "[$datetime] [ERROR] $message"
+        exit 1
+}
