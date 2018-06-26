@@ -1,1 +1,6 @@
  sql.jdbconnectionstring=jdbc:sqlserver://supplychainanalytics.database.windows.net:1433;database=SupplyChain;user=genpact@supplychainanalytics;password=Genpact@123;encrypt=tr    ue;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+
+
+sed -i "3s/sql.jdbconnectionstring.*$/sql.jdbconnectionstring=jdbc:sqlserver:\/\/$dbserver\:1433\;\database=$dbname\;user=${13}@$dbcut\;\password=${14}\;\encrypt=true\;trustServerCertificate=false\;hostNameInCertificate=*.database.windows.net\;loginTimeout=30/g" CAP-Data-Governance-API/src/main/resources/graphdb_init.properties
+dbcut=$( az sql server show -n gecastgsqlsrv$label -g PhoenixCatalogStg --query name | sed 's/\"//g')
+dbname=$(az sql db show -n gecastgsqldb$label -g PhoenixCatalogStg -s gecastgsqlsrv$label --query name | sed 's/\"//g')
