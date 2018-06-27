@@ -1,0 +1,3 @@
+$pscredential = Get-Credential Connect-AzureRmAccount -ServicePrincipal -ApplicationId "http://my-app" -Credential $pscredential -TenantId $tenantid
+
+https://docs.microsoft.com/en-us/powershell/azure/authenticate-azureps?view=azurermps-6.3.0
