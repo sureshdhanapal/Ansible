@@ -1,16 +1,17 @@
-secs=180
+secs=10
 seconds=0
 while (( seconds < secs ));
 do
         jsonstatus=$( curl -X PUT --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ "sample": "xyz" }' 'https://gecastgapp'$labels'.azurewebsites.net/templates/pipeline' | awk '{print $2}' | sed 's/\"//g' | sed 's/}//g')
         jsonexpected=successfully
         if [ "$jsonstatus" = "$jsonexpected" ];then
-                msg "JSON store initiated"
-                break;
-        else
-                sleep 5
-                if [ $secs = $seconds ]; then
-                        error_exit "JSON store failed to initiate"
-                fi
+        echo "JSON store initiated"
+        break;
+	else
+         sleep 2
+         if [ $SECONDS = $secs ]; then
+	    echo "Failed"
+            break;
+         fi
         fi
 done
