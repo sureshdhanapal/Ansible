@@ -1,3 +1,0 @@
-az network nsg create --n MachinelearningNSG -g PhoenixCatalogStg -l eastus
-az network nsg rule create -g PhoenixCatalogStg -n Port_22 --nsg-name MachinelearningNSG --priority 1000 --source-address-prefixes '*' --destination-address-prefixes '*' --destination-port-ranges  22 --access Allow --protocol Tcp --description "Allow SSH" 
-az network nsg rule create -g PhoenixCatalogStg -n Port_80 --nsg-name MachinelearningNSG --priority 1010 --source-address-prefixes '*' --destination-address-prefixes '*' --destination-port-ranges  80 --access Allow --protocol '*' --description "Allow port 80" 
