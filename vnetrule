@@ -1,0 +1,25 @@
+label=$(date +%Y%m%d)
+
+#Create Service principal
+azvnet=$(cat vnetoutput.json | jq .properties.outputs.virtualnet.value | sed 's/\"//g')
+azsubnet=$(cat vnetoutput.json | jq .properties.outputs.subnetname.value | sed 's/\"//g')
+
+
+passwd=$(az ad sp create-for-rbac --name "vnetrule" --query password -o tsv)
+echo $passwd
+appid=$(az ad sp show --id http://vnetrule --query appId -o tsv)
+echo $appid
+tenantid=$(az ad sp show --id http://vnetrule --query appOwnerTenantId -o tsv)
+echo $tenantid
+
+#Get Subscription ID
+
+sub=$(az account list --output table | awk 'FNR == 3 {print $4}')
+
+#Generate access token
+token=$(curl -X POST -d 'grant_type=client_credentials&client_id="'$appid'"&client_secret="'$passwd'"&resource=https%3A%2F%2Fmanagement.azure.com%2F' https://login.microsoftonline.com/$tenantid/oauth2/token | jq .access_token | sed 's/\"//g')
+
+#Create VNET Rule
+
+curl -X PUT -H "Authorization: Bearer $token" -H "Content-Type: application/json" --data '{ "properties": { "ignoreMissingVnetServiceEndpoint": "true", "virtualNetworkSubnetId": "/subscriptions/'$sub'/resourceGroups/Phoenixdevops/providers/Microsoft.Network/virtualNetworks/'$azvnet'/subnets/'$azsubnet'" }}' https://management.azure.com/subscriptions/$sub/resourceGroups/Phoenixdevops/providers/Microsoft.Sql/servers/gecastgsqlsrv$label/virtualNetworkRules/sqlaccess$label?api-version=2015-05-01-preview
+
