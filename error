@@ -1,1 +1,1 @@
-az cosmosdb create -n helena -g geeks_rg --default-consistency-level Session --enable-automatic-failover true --enable-virtual-network true --ip-range-filter 18.19.14.80  --virtual-network-rules /subscriptions/01494bc7-51c0-4aa5-8fd0-15562ca0ffec/resourceGroups/geeks_rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/public
+az sql server firewall-rule create --end-ip-address 0.0.0.0 --name AllowAllWindowsAzureIps --resource-group geeks_rg --server testdevops --start-ip-address 0.0.0.0
