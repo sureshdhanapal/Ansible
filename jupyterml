@@ -1,3 +1,7 @@
+# Save it as Dockerfile and run 
+#docker build . -f Dockerfile -t ML:latest
+
+FROM ubuntu
 # Updating Ubuntu packages 
 RUN apt-get update && yes|apt-get upgrade
 
