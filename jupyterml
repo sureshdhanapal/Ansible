@@ -16,7 +16,10 @@ RUN rm Anaconda2-5.2.0-Linux-x86_64.sh
 # Set path to conda 
 ENV PATH /root/anaconda3/bin:$PATH
 
-# Install keras and tensorflow packages 
+# Update and Install keras and tensorflow packages 
+RUN conda update conda 
+RUN conda update anaconda 
+#RUN conda update --all
 RUN echo y | conda install -c conda-forge keras 
 RUN echo y | conda install -c conda-forge tensorflow
 
