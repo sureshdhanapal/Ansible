@@ -1,0 +1,28 @@
+Jenkins integration:
+
+1. In your Jenkins dashboard, click on Manage Jenkins from the left navigation.
+2. Click on Manage Plugins and search for the Slack Notification Plugin in the Available tab. Make sure the version is 2.2. Click the checkbox and install the plugin.
+3. After it's installed, click on Manage Jenkins again in the left navigation, and then go to Configure System. Find the Global Slack Notifier Settings section and add the  values you got from slack:
+Example:
+Base URL: https://suresh.slack.com/services/hooks/jenkins-ci/
+Integration Token: uX8l3lSu46ybKRLvdWs3vx3VnB
+The other fields are optional. You can click on the question mark icons next to them for more information. Press Save when you're done.
+4. For each Project that you would like receive notifications for, choose Configure from the project's menu.
+5. Then you'll need to add Slack Notifications to the Post-build Actions for this project.
+6. In the Slack Notifications section, choose the events you'd like to be notified about.
+
+
+Workspace - App management:
+https://geeksdevops.slack.com/services/new
+Search for slash command app and 
+
+Slash commands - POST method
+
+ Jenkins  build from slack:
+  https://sonnguyen.ws/how-to-trigger-a-jenkins-build-from-slack/
+  https://stackoverflow.com/questions/31409149/jenkins-remote-trigger-not-working
+  https://support.cloudbees.com/hc/en-us/articles/204338790-Why-are-builds-not-being-triggered-with-Build-Token-Root-Plugin-
+
+  Example:
+  curl -X POST "http://jenkinsurl.com/buildByToken/build?job=slack&token=xxxxxxx"
+  curl -X POST "http://jenkinsurl.com/buildByToken/buildWithParameters/build?job=slack&token=xxxxxxxx&Variable=Mexican"
