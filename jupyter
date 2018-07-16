@@ -1,3 +1,5 @@
+FROM ubuntu
+
 # Updating Ubuntu packages 
 RUN apt-get update && yes|apt-get upgrade
 
