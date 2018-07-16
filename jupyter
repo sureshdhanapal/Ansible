@@ -1,3 +1,6 @@
+# Save it as DockerfileDL and run 
+#docker build . -f DockerfileDL -t DL:latest
+
 FROM ubuntu
 
 # Updating Ubuntu packages 
