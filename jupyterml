@@ -22,7 +22,7 @@ RUN conda update anaconda
 RUN conda update --all
 RUN echo y | conda install -c conda-forge keras 
 RUN echo y | conda install -c conda-forge tensorflow
-RUN apt-get install python3-pip python3-dev python-virtualenv
+RUN echo y | apt-get install python3-pip python3-dev python-virtualenv
 
 # Configuring access to Jupyter 
 RUN mkdir /opt/notebooks 
@@ -31,8 +31,6 @@ RUN jupyter notebook --generate-config --allow-root
 
 # Jupyter listens port: 8888 
 EXPOSE 8888
-
-python -c "import tensorflow as tf; print(tf.__version__)"
 
 # Run Jupytewr notebook as Docker main process 
 CMD ["jupyter", "notebook", "--allow-root", "--notebook-dir=/opt/notebooks", "--ip='*'", "--port=8888", "--no-browser"]
