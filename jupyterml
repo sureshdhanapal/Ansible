@@ -19,7 +19,7 @@ ENV PATH /root/anaconda3/bin:$PATH
 # Update and Install keras and tensorflow packages 
 RUN conda update conda 
 RUN conda update anaconda 
-#RUN conda update --all
+RUN conda update --all
 RUN echo y | conda install -c conda-forge keras 
 RUN echo y | conda install -c conda-forge tensorflow
 
