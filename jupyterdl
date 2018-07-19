@@ -1,5 +1,5 @@
 # Save it as DockerfileDL and run 
-#docker build . -f DockerfileDL -t DL:latest
+#docker build . -f DockerfileDL -t ml:latest
 
 FROM ubuntu
 
