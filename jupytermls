@@ -1,5 +1,5 @@
 # Save it as Dockerfile and run 
-#docker build . -f Dockerfile -t ML:latest
+#docker build . -f Dockerfile -t dl:latest
 
 FROM ubuntu
 # Updating Ubuntu packages 
