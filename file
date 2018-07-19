@@ -30,4 +30,3 @@ curl -X PUT -H "Authorization: Bearer eyJ0eiJKV1QiLCJhbGciOiJSUz1dCI6IlRpb0d5d3d
 https://docs.microsoft.com/en-us/rest/api/hdinsight/hdinsight-application
 
 
-https://slides.com/ashishapy/dockerwithdevops#/
