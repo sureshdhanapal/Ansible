@@ -10,9 +10,10 @@ az ad sp create-for-rbac --name "****" --password "****"
   "tenant": "a0c064bc-4064-40d7-8839-*****"
 }
 
-app ID: 3fc7e98e-1cb4-41f3-b80e-a1dc29539d84
-object id: c1e40f94-61f1-4b6d-b6e3-f8692ba1a38c
-key: 3aFAwOlDpcsztmG6ve+jL6vXpY9uifhty5bpRrI+P24=
+app : c2d013f7-817a-4125-adb0-c6e9aaaafdd3
+obj: fd7ade59-c715-4706-afd8-8debf73bef8b
+key: 5Fdkq1aPzJqPSiNQcHMQb90lZWv9T/FkGsUB+FQE88k=
+
 directory : bdef8a20-aaac-4f80-b3a0-d9a32f99fd33
 subscription: 343d8463-57d8-4e9f-bb2c-7feb5299cdf3
 
