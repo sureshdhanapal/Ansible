@@ -10,6 +10,12 @@ az ad sp create-for-rbac --name "****" --password "****"
   "tenant": "a0c064bc-4064-40d7-8839-*****"
 }
 
+app ID: 3fc7e98e-1cb4-41f3-b80e-a1dc29539d84
+object id: c1e40f94-61f1-4b6d-b6e3-f8692ba1a38c
+key: 3aFAwOlDpcsztmG6ve+jL6vXpY9uifhty5bpRrI+P24=
+directory : bdef8a20-aaac-4f80-b3a0-d9a32f99fd33
+subscription: 343d8463-57d8-4e9f-bb2c-7feb5299cdf3
+
 #Generate access token
 curl -X POST \
        -d 'grant_type=client_credentials&client_id=a66119d2-4bc7-4ef9-a062-****&client_secret=****&resource=https%3A%2F%2Fmanagement.azure.com%2F' \
