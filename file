@@ -10,7 +10,6 @@ az ad sp create-for-rbac --name "****" --password "****"
   "tenant": "a0c064bc-4064-40d7-8839-*****"
 }
 
-6Wt0/oMuRQCtPKHNmsUV57np76CfOikM
 
 #Generate access token
 curl -X POST \
