@@ -12,6 +12,7 @@ az ad sp create-for-rbac --name "****" --password "****"
 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3elktpZ99aZvKwKFxbcpGkmlghQrM6Vh8RLgOxq9/x6pFBm8A8BleA9W2KP4lsekp8Fni+6hv6Xst6EeVleQoXHUueZNwrKDNMTob0HvA2z2JMj094VZUCzlOwr5wtc6yLHvXVImaBb5yZQHOHqUxJr0K3eE/saHzdDsMWLc51YK+diDNgfTNSrr0qqI3OtIDwF9eNnEzQ/Vn40XLuZ6dyXz5pjpUgkYsczQQkEL3DPJU4AUH4XhJJSFfZfAkr1+Fyc1wXM75sG9+XiZ1LqRUA1pI2O2z9P3AusUmEcWFlJ6zTaguDzGcj6r6+uEKETktm3MGZnTIlZKhhYhTg6CD
 #Generate access token
+#
 curl -X POST \
        -d 'grant_type=client_credentials&client_id=a66119d2-4bc7-4ef9-a062-****&client_secret=****&resource=https%3A%2F%2Fmanagement.azure.com%2F' \
      https://login.microsoftonline.com/a0c064bc-4064-40d7-8839-******/oauth2/token
