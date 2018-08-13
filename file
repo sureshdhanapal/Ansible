@@ -31,3 +31,17 @@ curl -X PUT -H "Authorization: Bearer eyJ0eiJKV1QiLCJhbGciOiJSUz1dCI6IlRpb0d5d3d
 #API
 https://docs.microsoft.com/en-us/rest/api/hdinsight/hdinsight-application
 
+
+Deployment failed. Correlation ID: 6aebc229-df60-4f54-accc-4335ef1817e7. {
+  "status": "Failed",
+  "error": {
+    "code": "ResourceDeploymentFailure",
+    "message": "The resource operation completed with terminal provisioning state 'Failed'.",
+    "details": [
+      {
+        "code": "VMExtensionProvisioningError",
+        "message": "VM has reported a failure when processing extension 'cse-master-0'. Error message: \"Enable failed: failed to execute command: command terminated with exit status=30\n[stdout]\n\n[stderr]\n\"."
+      }
+    ]
+  }
+}
