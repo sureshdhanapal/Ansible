@@ -46,7 +46,3 @@ Deployment failed. Correlation ID: 6aebc229-df60-4f54-accc-4335ef1817e7. {
   }
 }
 
-https://docs.microsoft.com/en-us/azure/data-factory/connector-azure-sql-database#using-service-principal-authentication
-https://docs.microsoft.com/en-us/azure/sql-database/sql-database-aad-authentication-configure#create-contained-database-users-in-your-database-mapped-to-azure-ad-identities
-
-
