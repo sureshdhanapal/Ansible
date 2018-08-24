@@ -47,3 +47,8 @@ Deployment failed. Correlation ID: 6aebc229-df60-4f54-accc-4335ef1817e7. {
 }
 
 
+https://docs.microsoft.com/en-us/sql/connect/jdbc/connecting-using-azure-active-directory-authentication?view=sql-server-2017
+https://docs.microsoft.com/en-us/azure/sql-database/sql-database-aad-authentication
+https://docs.microsoft.com/en-us/azure/sql-database/sql-database-manage-logins
+
+
